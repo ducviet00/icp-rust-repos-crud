@@ -1,0 +1,2 @@
+[workspace]
+members = ["src/repo_manage"]

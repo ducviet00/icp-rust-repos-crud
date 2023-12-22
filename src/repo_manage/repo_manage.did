@@ -1,0 +1,40 @@
+type Error = variant {
+  CreateFail : record { msg : text };
+  NotFound : record { msg : text };
+  UpdateFail : record { msg : text };
+};
+type ProgrammingLanguage = record {
+  id : nat64;
+  updated_at : opt nat64;
+  name : text;
+};
+type ProgrammingLanguagePayload = record { name : text };
+type Repo = record {
+  id : nat64;
+  repo_name : text;
+  updated_at : opt nat64;
+  language_id : nat64;
+  description : text;
+};
+type RepoPayload = record {
+  repo_name : text;
+  language_id : nat64;
+  description : text;
+};
+type Result = variant { Ok : ProgrammingLanguage; Err : Error };
+type Result_1 = variant { Ok : Repo; Err : Error };
+type Result_2 = variant { Ok : vec ProgrammingLanguage; Err : Error };
+type Result_3 = variant { Ok : vec Repo; Err : Error };
+service : {
+  add_language : (ProgrammingLanguagePayload) -> (Result);
+  create_repo : (RepoPayload) -> (Result_1);
+  delete_repo : (nat64) -> (Result_1);
+  get_all_languages : () -> (Result_2) query;
+  get_all_repos : () -> (Result_3) query;
+  get_language : (nat64) -> (Result) query;
+  get_repo : (nat64) -> (Result_1) query;
+  update_language : (nat64, ProgrammingLanguagePayload) -> (Result);
+  update_repo : (nat64, RepoPayload) -> (Result_1);
+  update_repo_description : (nat64, text) -> (Result_1);
+  update_repo_name : (nat64, text) -> (Result_1);
+}

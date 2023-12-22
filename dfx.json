@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "canisters": {
+    "repo_manage": {
+      "type": "rust",
+      "package": "repo_manage",
+      "candid": "src/repo_manage/repo_manage.did"
+    }
+  },
+  "output_env_file": ".env"
+}
