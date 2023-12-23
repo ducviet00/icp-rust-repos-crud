@@ -77,7 +77,6 @@ thread_local! {
         RefCell::new(StableBTreeMap::init(
             MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(2)))
     ));
-
 }
 
 #[derive(candid::CandidType, Serialize, Deserialize, Default)]
@@ -97,7 +96,8 @@ fn get_repo(id: u64) -> Result<Repo, Error> {
     match _get_repo(&id) {
         Some(repo) => Ok(repo),
         None => Err(Error::NotFound {
-            msg: format!("a repo with id={} not found", id),
+            entity: "Repo".to_string(),
+            id,
         }),
     }
 }
@@ -112,7 +112,8 @@ fn get_all_repos() -> Result<Vec<Repo>, Error> {
         Ok(repos)
     } else {
         Err(Error::NotFound {
-            msg: "No repo found.".to_string(),
+            entity: "Repo".to_string(),
+            id: 0,
         })
     }
 }
@@ -122,7 +123,8 @@ fn get_language(id: u64) -> Result<ProgrammingLanguage, Error> {
     match _get_language(&id) {
         Some(language) => Ok(language),
         None => Err(Error::NotFound {
-            msg: format!("a language with id={} not found", id),
+            entity: "ProgrammingLanguage".to_string(),
+            id,
         }),
     }
 }
@@ -137,7 +139,8 @@ fn get_all_languages() -> Result<Vec<ProgrammingLanguage>, Error> {
         Ok(langs)
     } else {
         Err(Error::NotFound {
-            msg: "No programming language found.".to_string(),
+            entity: "ProgrammingLanguage".to_string(),
+            id: 0,
         })
     }
 }
@@ -195,7 +198,8 @@ fn update_repo(id: u64, payload: RepoPayload) -> Result<Repo, Error> {
             Ok(repo)
         }
         None => Err(Error::NotFound {
-            msg: format!("couldn't update a repo with id={}. repo not found", id),
+            entity: "Repo".to_string(),
+            id,
         }),
     }
 }
@@ -215,7 +219,8 @@ fn update_repo_name(id: u64, repo_name: String) -> Result<Repo, Error> {
             Ok(repo)
         }
         None => Err(Error::NotFound {
-            msg: format!("couldn't update a repo with id={}. repo not found", id),
+            entity: "Repo".to_string(),
+            id,
         }),
     }
 }
@@ -235,7 +240,8 @@ fn update_repo_description(id: u64, description: String) -> Result<Repo, Error> 
             Ok(repo)
         }
         None => Err(Error::NotFound {
-            msg: format!("couldn't update a repo with id={}. repo not found", id),
+            entity: "Repo".to_string(),
+            id,
         }),
     }
 }
@@ -254,7 +260,8 @@ fn delete_repo(id: u64) -> Result<Repo, Error> {
     match REPO_STORAGE.with(|service| service.borrow_mut().remove(&id)) {
         Some(repo) => Ok(repo),
         None => Err(Error::NotFound {
-            msg: format!("couldn't delete a repo with id={}. repo not found.", id),
+            entity: "Repo".to_string(),
+            id,
         }),
     }
 }
@@ -302,17 +309,18 @@ fn update_language(
             Ok(lang)
         }
         None => Err(Error::NotFound {
-            msg: format!("Programming language with id={} not found.", id),
+            entity: "ProgrammingLanguage".to_string(),
+            id,
         }),
     }
 }
 
 #[derive(candid::CandidType, Deserialize, Serialize)]
 enum Error {
-    NotFound { msg: String },
+    NotFound { entity: String, id: u64 },
     CreateFail { msg: String },
     UpdateFail { msg: String },
 }
 
-// generate candid
+// Candid Interface
 ic_cdk::export_candid!();
